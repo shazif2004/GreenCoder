@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fridge to Feast: Smart Recipe Finder</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #90EE90;
+        }
+        .app-container {
+            background-color: #f4f4f4;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .input-section {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .input-section input {
+            flex-grow: 1;
+            padding: 10px;
+            margin-right: 10px;
+        }
+        .fridge-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .fridge-item {
+            background-color: #e0e0e0;
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .fridge-item button {
+            background: none;
+            border: none;
+            color: red;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        .recipe-card {
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+        // Ingredient nutrition data
+        const ingredientNutrition = {
+            "chicken": { calories: 239, protein: 27, carbs: 0, fat: 14 },
+            "beef": { calories: 250, protein: 26, carbs: 0, fat: 17 },
+            "rice": { calories: 130, protein: 2.7, carbs: 28, fat: 0.3 },
+            "tomato": { calories: 18, protein: 0.9, carbs: 3.9, fat: 0.2 },
+            "onion": { calories: 40, protein: 1.1, carbs: 9.3, fat: 0.1 },
+            "potato": { calories: 77, protein: 2, carbs: 17, fat: 0.1 },
+            "cheese": { calories: 402, protein: 25, carbs: 1.3, fat: 33 },
+            "egg": { calories: 155, protein: 13, carbs: 1.1, fat: 11 },
+            "milk": { calories: 42, protein: 3.4, carbs: 5, fat: 1 }
+        };
+
+        // Predefined recipes
+        const recipes = [
+            {
+                name: "Chicken Rice Bowl",
+                ingredients: ["chicken", "rice", "onion"],
+                instructions: [
+                    "Heat oil in a pan and sauté onions until golden brown.",
+                    "Add chicken and cook until no longer pink.",
+                    "Add cooked rice and mix well, seasoning to taste.",
+                    "Serve hot with garnishes of your choice."
+                ]
+            },
+            {
+                name: "Tomato Omelette",
+                ingredients: ["egg", "tomato", "onion"],
+                instructions: [
+                    "Beat eggs in a bowl and mix in chopped tomatoes and onions.",
+                    "Heat oil in a pan and pour in the mixture.",
+                    "Cook on low heat until set, then flip and cook the other side.",
+                    "Serve hot with toast or rice."
+                ]
+            },
+            {
+                name: "Cheesy Mashed Potatoes",
+                ingredients: ["potato", "cheese", "milk"],
+                instructions: [
+                    "Boil potatoes until soft and mash them.",
+                    "Mix in cheese and warm milk until smooth and creamy.",
+                    "Season with salt and pepper to taste.",
+                    "Serve as a side dish or enjoy on its own."
+                ]
+            }
+        ];
+
+        // Function to calculate the nutritional value of ingredients
+        function calculateNutrition(ingredients) {
+            let totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFat = 0;
+
+            ingredients.forEach(ingredient => {
+                if (ingredientNutrition[ingredient]) {
+                    const nutrition = ingredientNutrition[ingredient];
+                    totalCalories += nutrition.calories;
+                    totalProtein += nutrition.protein;
+                    totalCarbs += nutrition.carbs;
+                    totalFat += nutrition.fat;
+                }
+            });
+
+            return {
+                calories: `${totalCalories} kcal`,
+                protein: `${totalProtein}g`,
+                carbs: `${totalCarbs}g`,
+                fat: `${totalFat}g`
+            };
+        }
+
+        // Function to find recipes based on user ingredients
+        function findRecipes(userIngredients) {
+            const availableIngredients = userIngredients.map(i => i.toLowerCase());
+
+            return recipes.filter(recipe => 
+                recipe.ingredients.every(ingredient => availableIngredients.includes(ingredient))
+            );
+        }
+
+        function App() {
+            const [fridgeItems, setFridgeItems] = React.useState([]);
+            const [newItem, setNewItem] = React.useState('');
+            const [recipesList, setRecipesList] = React.useState([]);
+            const [isLoading, setIsLoading] = React.useState(false);
+
+            // Adding ingredients to fridge
+            const addItem = () => {
+                if (newItem.trim() && !fridgeItems.includes(newItem.trim())) {
+                    setFridgeItems([...fridgeItems, newItem.trim().toLowerCase()]);
+                    setNewItem('');
+                }
+            };
+
+            // Removing ingredients from fridge
+            const removeItem = (item) => {
+                setFridgeItems(fridgeItems.filter(i => i !== item));
+            };
+
+            // Finding recipes based on available ingredients
+            const findRecipesHandler = () => {
+                if (fridgeItems.length === 0) {
+                    alert("Please add some ingredients!");
+                    return;
+                }
+
+                setIsLoading(true);
+
+                setTimeout(() => {
+                    const matchedRecipes = findRecipes(fridgeItems);
+                    setRecipesList(matchedRecipes);
+                    setIsLoading(false);
+                }, 1000);
+            };
+
+            return (
+                <div className="app-container">
+                    <h1>Fridge to Feast: Reduce Food Waste</h1>
+
+                    <div className="input-section">
+                        <input 
+                            type="text" 
+                            value={newItem}
+                            onChange={(e) => setNewItem(e.target.value)}
+                            placeholder="Enter an ingredient"
+                            onKeyPress={(e) => e.key === 'Enter' && addItem()}
+                        />
+                        <button onClick={addItem}>Add Item</button>
+                    </div>
+
+                    <div className="fridge-list">
+                        {fridgeItems.map(item => (
+                            <div key={item} className="fridge-item">
+                                {item}
+                                <button onClick={() => removeItem(item)}>×</button>
+                            </div>
+                        ))}
+                    </div>
+
+                    <button onClick={findRecipesHandler} disabled={isLoading}>
+                        {isLoading ? 'Searching Recipes...' : 'Find Recipes'}
+                    </button>
+
+                    {recipesList.map((recipe, index) => (
+                        <div key={index} className="recipe-card">
+                            <h3>{recipe.name}</h3>
+                            <p><strong>Ingredients:</strong> {recipe.ingredients.join(", ")}</p>
+                            <p><strong>Instructions:</strong></p>
+                            <ol>{recipe.instructions.map((step, i) => <li key={i}>{step}</li>)}</ol>
+                            <p><strong>Nutritional Information:</strong></p>
+                            <p>Calories: {calculateNutrition(recipe.ingredients).calories}</p>
+                            <p>Protein: {calculateNutrition(recipe.ingredients).protein}</p>
+                            <p>Carbs: {calculateNutrition(recipe.ingredients).carbs}</p>
+                            <p>Fat: {calculateNutrition(recipe.ingredients).fat}</p>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
