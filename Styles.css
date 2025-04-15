@@ -3,7 +3,11 @@ body {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background: linear-gradient(to bottom,#90EE90, #20B2aa );
+    /* New smoother, darker green gradient */
+    background: linear-gradient(to bottom, #0a2e10, #1f4f24, #3e8e41, #6fbf73);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 .app-container {
     background-color: #f4f4f4;
