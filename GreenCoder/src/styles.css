@@ -1,0 +1,52 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    /* New smoother, darker green gradient */
+    background: linear-gradient(to bottom, #0a2e10, #1f4f24, #3e8e41, #6fbf73);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.app-container {
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.input-section {
+    display: flex;
+    margin-bottom: 20px;
+}
+.input-section input {
+    flex-grow: 1;
+    padding: 10px;
+    margin-right: 10px;
+}
+.fridge-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.fridge-item {
+    background-color: #e0e0e0;
+    padding: 5px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+}
+.fridge-item button {
+    background: none;
+    border: none;
+    color: red;
+    margin-left: 5px;
+    cursor: pointer;
+}
+.recipe-card {
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+}

@@ -1,6 +1,79 @@
 import React, { useState } from "react";
-import { ingredientNutrition, recipes } from "./Data";
 import "./Styles.css";
+
+// Ingredient nutritional data
+const ingredientNutrition = {
+    chicken: { calories: 200, protein: 20, carbs: 0, fat: 5 },
+    lettuce: { calories: 10, protein: 1, carbs: 2, fat: 0 },
+    tomato: { calories: 20, protein: 1, carbs: 4, fat: 0 },
+    onion: { calories: 40, protein: 1, carbs: 9, fat: 0 },
+    cheese: { calories: 100, protein: 5, carbs: 1, fat: 9 },
+    avocado: { calories: 160, protein: 2, carbs: 9, fat: 15 },
+    bacon: { calories: 42, protein: 3, carbs: 0, fat: 3 },
+    bread: { calories: 80, protein: 2, carbs: 15, fat: 1 },
+    lettuceWrap: { calories: 5, protein: 1, carbs: 1, fat: 0 },
+    tomatoSauce: { calories: 30, protein: 1, carbs: 7, fat: 0 },
+    mustard: { calories: 10, protein: 0, carbs: 1, fat: 0 },
+    pickle: { calories: 5, protein: 0, carbs: 1, fat: 0 }
+};
+
+// Recipe data
+const recipes = [
+    {
+        name: "Chicken Salad",
+        ingredients: ["chicken", "lettuce", "tomato"],
+        instructions: [
+            "Grill the chicken",
+            "Chop the veggies",
+            "Mix together"
+        ]
+    },
+    {
+        name: "Chicken Sandwich",
+        ingredients: ["chicken", "bread", "lettuce", "tomato", "cheese"],
+        instructions: [
+            "Grill the chicken",
+            "Toast the bread",
+            "Assemble the sandwich with lettuce, tomato, and cheese"
+        ]
+    },
+    {
+        name: "BLT Sandwich",
+        ingredients: ["bacon", "lettuce", "tomato", "bread"],
+        instructions: [
+            "Cook the bacon",
+            "Toast the bread",
+            "Assemble the sandwich with bacon, lettuce, and tomato"
+        ]
+    },
+    {
+        name: "Avocado Toast",
+        ingredients: ["avocado", "bread", "tomato"],
+        instructions: [
+            "Toast the bread",
+            "Mash the avocado and spread it on the toast",
+            "Top with sliced tomato"
+        ]
+    },
+    {
+        name: "Chicken Lettuce Wraps",
+        ingredients: ["chicken", "lettuceWrap", "onion", "tomato", "bacon"],
+        instructions: [
+            "Grill the chicken",
+            "Chop the onion and tomato",
+            "Assemble in lettuce wraps with bacon"
+        ]
+    },
+    {
+        name: "Cheeseburger",
+        ingredients: ["beefPatty", "lettuce", "tomato", "cheese", "bread", "pickle"],
+        instructions: [
+            "Grill the beef patty",
+            "Toast the bread",
+            "Assemble with lettuce, tomato, cheese, and pickle"
+        ]
+    }
+];
 
 // Function to calculate nutritional information for a recipe
 function calculateNutrition(ingredients) {
@@ -28,9 +101,15 @@ function calculateNutrition(ingredients) {
 function findRecipes(userIngredients) {
     const availableIngredients = userIngredients.map(i => i.toLowerCase());
 
-    return recipes.filter(recipe => 
-        recipe.ingredients.every(ingredient => availableIngredients.includes(ingredient))
-    );
+    console.log("User Ingredients:", availableIngredients); // Debugging log
+
+    return recipes.filter(recipe => {
+        const match = recipe.ingredients.every(ingredient =>
+            availableIngredients.includes(ingredient)
+        );
+        console.log(`Recipe: ${recipe.name}, Match: ${match}`); // Debugging log
+        return match;
+    });
 }
 
 function App() {
@@ -63,6 +142,7 @@ function App() {
 
         setTimeout(() => {
             const matchedRecipes = findRecipes(fridgeItems);
+            console.log("Matched Recipes:", matchedRecipes); // Debugging log
             setRecipesList(matchedRecipes);
             setIsLoading(false);
         }, 1000);
